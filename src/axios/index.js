@@ -7,7 +7,8 @@ export default class Axios {
     static jsonp(options) {
       return new Promise((resolve, reject) => {
         JsonP(options.url, {
-          param: 'callback'
+          param: 'callback',
+          // param: options.param,
         }, function (err, response) {
           if (response) {
             // debugger;
@@ -27,7 +28,7 @@ export default class Axios {
         // }
         // let baseApi = 'https://www.easy-mock.com/mock/5a7278e28d0c633b9c4adbd7/api';
         // let baseApi = ' https://easy-mock.com/mock/5bac4d5f8e6cec555097b77b/mock';
-        let baseApi = 'http://127.0.0.1:5000';
+        let baseApi = 'http://127.0.0.1:3010';
         return new Promise((resolve,reject)=>{
             axios({
                 url:options.url,
@@ -40,7 +41,7 @@ export default class Axios {
                 //     loading = document.getElementById('ajaxLoading');
                 //     loading.style.display = 'none';
                 // }
-                if (response.status == '200'){
+                if (response){
                     // let res = response.data;
                     // console.log(res);
                     let flag = true;

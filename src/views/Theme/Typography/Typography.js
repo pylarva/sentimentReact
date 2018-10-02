@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
+import { Alert, Card, CardBody, CardHeader, Col, Row, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import {
   Badge,
   Button,
@@ -20,12 +20,114 @@ import {
   InputGroupText,
   Label,
 } from 'reactstrap';
+import axios from "../../../axios";
 
 
 class Typography extends Component {
-  render() {
-    return (
-      <div className="animated fadeIn">
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            username : '',
+            modal: false,
+            large: false,
+            small: false,
+            primary: false,
+            success: false,
+            warning: false,
+            danger: false,
+            info: false,
+        };
+
+        this.updateInput = this.updateInput.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.togglePrimary = this.togglePrimary.bind(this);
+    }
+
+    togglePrimary() {
+        axios.ajax({
+            url:'/index/',
+            data:{
+                params:{
+                    sample_info: this.state.username
+                }
+            }
+        }).then((res)=>{
+            // console.log(res.data);
+            if(res){
+                this.setState({
+                    machine_info: res.data.machine_server,
+                    primary: !this.state.primary,
+                })
+            }
+        });
+    }
+
+    updateInput(event){
+        this.setState({username : event.target.value})
+    }
+
+
+    handleSubmit(){
+        console.log('Your input value is: ' + this.state.username);
+    //  发送POST
+        let _this = this;
+        axios.ajax({
+            url:'/index/',
+            data:{
+                params:{
+                    sample_info: this.state.username
+                }
+            }
+        }).then((res)=>{
+            console.log(res.data);
+            if(res){
+                this.setState({
+                    // dataSource2:res.result.list,
+                    // selectedRowKeys:[],
+                    // selectedRows:null,
+                    // pagination: Utils.pagination(res,(current)=>{
+                    //     _this.params.page = current;
+                    //     this.request();
+                    // })
+                })
+            }
+        })
+    }
+
+    // 动态获取mock数据
+    request = ()=>{
+        let _this = this;
+        axios.ajax({
+            url:'/table/list',
+            data:{
+                params:{
+                    page:this.params.page
+                }
+            }
+        }).then((res)=>{
+            if(res.code == 0){
+                res.result.list.map((item, index) => {
+                    item.key = index;
+                })
+                this.setState({
+                    dataSource2:res.result.list,
+                    selectedRowKeys:[],
+                    selectedRows:null,
+                    // pagination: Utils.pagination(res,(current)=>{
+                    //     _this.params.page = current;
+                    //     this.request();
+                    // })
+                })
+            }
+        })
+    };
+
+
+    render() {
+      return (
+        <div className="animated fadeIn">
         <Alert color="primary">
           <div>
             <i className="cui-lightbulb icons font-2xl d-block">注意！</i>
@@ -45,7 +147,7 @@ class Typography extends Component {
                   <Label htmlFor="textarea-input">输入文本</Label>
                 </Col>
                 <Col xs="12" md="9">
-                  <Input type="textarea" name="textarea-input" id="textarea-input" rows="9"
+                  <Input type="textarea" onChange={this.updateInput} name="textarea-input" id="textarea-input1" rows="9"
                          placeholder="Content..." />
                 </Col>
               </FormGroup>
@@ -71,8 +173,21 @@ class Typography extends Component {
             </Form>
           </CardBody>
           <CardFooter>
-            <Button type="submit" size="sm" color="primary" ><i className="fa fa-dot-circle-o"></i> 提交</Button>
-            <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> 重置</Button>
+            {/*<Button type="submit" size="sm" onClick={this.handleSubmit} color="primary"><i className="fa fa-dot-circle-o"></i> 提交</Button>*/}
+            <Button type="submit" size="sm" onClick={this.togglePrimary} color="primary"><i className="fa fa-dot-circle-o"></i> 提交</Button>
+              {/*<Button color="primary" onClick={this.togglePrimary} className="mr-1">Primary modal</Button>*/}
+              <Modal isOpen={this.state.primary} toggle={this.togglePrimary}
+                     className={'modal-primary ' + this.props.className}>
+                  <ModalHeader toggle={this.togglePrimary}>评价结果</ModalHeader>
+                  <ModalBody>
+                      {this.state.machine_info}
+                  </ModalBody>
+                  <ModalFooter>
+                      <Button color="secondary" onClick={this.togglePrimary}>错误反馈</Button>{' '}
+                      <Button color="success" onClick={this.togglePrimary}>确定</Button>
+                  </ModalFooter>
+              </Modal>
+              <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> 重置</Button>
           </CardFooter>
         </Card>
         <Card>

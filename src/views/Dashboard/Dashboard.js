@@ -533,7 +533,7 @@ const mainChartOpts = {
 class Dashboard extends Component {
   // 定义数据
   state = {
-    // dataSource2:[]
+    dataSource2:[]
 
   };
 
@@ -544,55 +544,57 @@ class Dashboard extends Component {
   // };
 
   componentDidMount(){
-    // this.request1();
-    this.getWeatherAPIData();
+    this.request1();
+    // this.getWeatherAPIData();
   }
 
   // 动态获取数据
-  request1 = () => {
-    let _this = this;
-    axios.ajax({
-      url: '/index/',
-      // data: {
-        // params: {
-        //   page: this.params.page
+    request1 = () => {
+      let _this = this;
+      axios.ajax({
+        url: '/index/',
+        // data: {
+          // params: {
+          //   page: this.params.page
+          // }
         // }
-      // }
-    }).then((res) => {
-      if (res.status == 200) {
-        // res.result.list.map((item, index) => {
-        //   item.key = index;
-        // });
-        console.log(res.status);
-        this.setState({
-          good_num: res.good_num,
-          nature_num: res.nature_num,
-          intens_num: res.intens_num,
-          doughnut_data: {
-            labels: [
-              '强烈',
-              '积极',
-              '宽容',
-            ],
-            datasets: [
-              {
-                data: [res.good_num, res.nature_num, res.intens_num],
-                backgroundColor: [
-                  '#FF6384',
-                  '#36A2EB',
-                  '#FFCE56',
-                ],
-                hoverBackgroundColor: [
-                  '#FF6384',
-                  '#36A2EB',
-                  '#FFCE56',
-                ],
-              }],
-          }
-        })
-      }
-    })
-  };
+      }).then((res) => {
+        if (res) {
+          // res.result.list.map((item, index) => {
+          //   item.key = index;
+          // });
+            console.log(res.data.data);
+            this.setState({
+                total_num: res.data.total_num,
+                good_num: res.data.good_num,
+                nature_num: res.data.nature_num,
+                intens_num: res.data.intens_num,
+                dataSource2: res.data.data,
+                doughnut_data: {
+                    labels: [
+                        '强烈',
+                        '积极',
+                        '宽容',
+                    ],
+                    datasets: [
+                        {
+                            data: [res.data.good_num, res.data.nature_num, res.data.intens_num],
+                            backgroundColor: [
+                                '#FF6384',
+                                '#36A2EB',
+                                '#FFCE56',
+                            ],
+                            hoverBackgroundColor: [
+                                '#FF6384',
+                                '#36A2EB',
+                                '#FFCE56',
+                            ],
+                        }],
+                }
+            });
+        }
+      })
+    };
 
   // addData(chart, data) {
   //   chart.data.datasets.forEach(dataset => {
@@ -603,7 +605,7 @@ class Dashboard extends Component {
 
   getWeatherAPIData(){
     axios.jsonp({
-      url:'http://127.0.0.1:5000/index/'
+      url:'http://127.0.0.1:3010/index/'
     }).then((res)=>{
       if(res){
         console.log('data:');
@@ -639,9 +641,6 @@ class Dashboard extends Component {
               }],
           }
         });
-        console.log('dataSource2-----');
-        console.log(this.state.dataSource2);
-        console.log(this.state.good_num)
       }
     })
   }
@@ -858,7 +857,6 @@ class Dashboard extends Component {
                   {
                     (this.state.dataSource2 || []).map((row,index)=>{
                       if(this.state.dataSource2[index].rank === '罪恶谴责'){
-                        console.log('hhahahhaha');
                         return (<tr key={index}>
                           <td>{row.id}</td>
                           <td>{row.username}</td>
