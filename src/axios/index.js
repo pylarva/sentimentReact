@@ -28,7 +28,8 @@ export default class Axios {
         // }
         // let baseApi = 'https://www.easy-mock.com/mock/5a7278e28d0c633b9c4adbd7/api';
         // let baseApi = ' https://easy-mock.com/mock/5bac4d5f8e6cec555097b77b/mock';
-        let baseApi = 'http://127.0.0.1:3010';
+        // let baseApi = 'http://127.0.0.1:3010';
+        let baseApi = 'http://118.24.137.166:3010';
         return new Promise((resolve,reject)=>{
             axios({
                 url:options.url,
